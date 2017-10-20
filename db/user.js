@@ -73,35 +73,6 @@ module.exports = ({ Users }, { userByID }) => {
         const response = await Users.insert(newUser);
         return Object.assign({ id: response.insertedIds[0] }, newUser);
     }
-
-    methods.createUserFromSocial = async (data) => {
-              console.log("ASd");
-        const existingUser = await Users.findAndModify(
-            { linkedAccounts: { $elemMatch: { provider: data.linkedAccounts[0].provider, email: data.linkedAccounts[0].email } } },
-            [],
-            { $set: { "linkedAccounts.$.token": data.linkedAccounts[0].token } },
-            { new: true } 
-        );
-
-        if (existingUser.value) return existingUser.value;
-        
-
-        // Nope -- let's create one
-
-        // All good - proceed
-         const newUser = {
-            name: data.name,
-            email: null,
-            linkedAccounts: data.linkedAccounts,
-            password: null,
-            bios: null,
-            image: null,
-            cover: null,
-            tracks: null,
-        };
-        const response = await Users.insert(newUser);
-        return Object.assign({ id: response.insertedIds[0] }, newUser);
-    }
     
     return methods;
 };

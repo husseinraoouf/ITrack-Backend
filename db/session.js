@@ -19,14 +19,14 @@ module.exports = ({ Sessions, Users }) => {
 
 
     methods.createSession = async (user) => {
-        
+
         // All good - proceed
 
         const expire = new Date();
         expire.setDate(expire.getDate() + 30);
 
         const newSession = {
-            user: user,
+            userID: user._id,
             token: encodeJWT({
                 id: user._id,
                 name: user.name,
@@ -35,7 +35,7 @@ module.exports = ({ Sessions, Users }) => {
             expiresAt: expire,
         };
         const response = await Sessions.insert(newSession);
-        return Object.assign({ id: response.insertedIds[0] }, newSession);
+        return Object.assign({ id: response.insertedIds[0], user }, newSession);
         
     }
 
@@ -83,6 +83,39 @@ module.exports = ({ Sessions, Users }) => {
 
         // Create the new session
         return methods.createSession(user);
+    }
+
+
+    methods.signinUserFromSocial = async (data) => {
+
+        const existingUser = await Users.findAndModify(
+            { linkedAccounts: {$elemMatch: {provide: data.socialAuthProvider.provider, email: data.socialAuthProvider.email, } } },
+            [],               // represents a sort order if multiple matches
+            { $set: { "linkedAccounts.$.token": data.socialAuthProvider.token } },   // update statement
+            { new: true },
+        );
+        
+        if (existingUser.value) return methods.createSession(existingUser.value);
+    
+        // Nope -- let's create one
+    
+        // All good - proceed
+        const newUser = {
+            name: data.name,
+            email: data.socialAuthProvider.email,
+            password: null,
+            linkedAccounts: [{
+                provide: data.socialAuthProvider.provider,
+                email: data.socialAuthProvider.email,
+                token: data.socialAuthProvider.token,
+            }],
+            bios: null,
+            image: null,
+            cover: null,
+            tracks: null,
+        };
+        const response = await Users.insert(newUser);
+        return methods.createSession(Object.assign({ _id: response.insertedIds[0] }, newUser));
     }
 
     return methods;

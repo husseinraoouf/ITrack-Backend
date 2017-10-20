@@ -17,6 +17,8 @@ const typeDefs = `
         createUser(name: String!, authProvider: AUTH_PROVIDER_EMAIL!): User!
         signinUser(authProvider: AUTH_PROVIDER_EMAIL): SigninPayload!
 
+        signinUserFromSocial(name: String!, socialAuthProvider: AUTH_PROVIDER_SOCIAL!): SigninPayload!
+
         createField(name: String!, description: String!): Field!
 
 
@@ -41,8 +43,6 @@ const typeDefs = `
         id: ID!
         user: User!
         token: String!
-        device: String!
-        lastUse: String!
     }
     
     type linkedAccount {
@@ -60,6 +60,12 @@ const typeDefs = `
     input AUTH_PROVIDER_EMAIL {
         email: String!
         password: String!
+    }
+
+    input AUTH_PROVIDER_SOCIAL {
+        provider: String!
+        email: String!
+        token: String!
     }
 
     type SigninPayload {

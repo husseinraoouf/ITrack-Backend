@@ -109,6 +109,12 @@ module.exports = {
             return await login(data);
         },
 
+        signinUserFromSocial: async (root, data, { sessionDB: { signinUserFromSocial } }) => {
+            
+            return await signinUserFromSocial(data);
+        },
+
+
         createField: async (root, data, { fieldDB: { createField } }) => {
          
             return await createField(data);
@@ -142,8 +148,6 @@ module.exports = {
 
             return await getByID(root.userID);
         },
-        
-        lastUse: root => root.lastUse.toString(),
     },
 
 
