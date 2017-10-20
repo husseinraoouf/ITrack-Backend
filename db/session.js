@@ -18,31 +18,28 @@ module.exports = ({ Sessions, Users }) => {
     methods.getByUserID = async (id) => await Sessions.find({ userID: id }).toArray();
 
 
-    methods.createSession = async (user, device) => {
+    methods.createSession = async (user) => {
         
         // All good - proceed
 
-        const now = new Date();
         const expire = new Date();
-        expire.setDate(now.getDate() + 30);
+        expire.setDate(expire.getDate() + 30);
 
         const newSession = {
-            userID: user._id,
+            user: user,
             token: encodeJWT({
                 id: user._id,
                 name: user.name,
                 image: user.image
             }),
-            device: device,
             expiresAt: expire,
-            lastUse: now
         };
         const response = await Sessions.insert(newSession);
         return Object.assign({ id: response.insertedIds[0] }, newSession);
         
     }
 
-    methods.login = async (data, device) => {
+    methods.login = async (data) => {
 
         const e = new FormError();
 
@@ -85,7 +82,7 @@ module.exports = ({ Sessions, Users }) => {
         e.throwIf();
 
         // Create the new session
-        return methods.createSession(user, device);
+        return methods.createSession(user);
     }
 
     return methods;

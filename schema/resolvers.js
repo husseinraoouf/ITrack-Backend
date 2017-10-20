@@ -82,8 +82,6 @@ function buildFilters({
     return filters;
 }
 
-const { JWT_COOKIE } = require('../lib/consts');
-
 module.exports = {
     Query: {
         allUsers: async (root, data, { userDB: { getAll } }) => {
@@ -106,17 +104,9 @@ module.exports = {
             return await createUser(data);
         },
 
-        signinUser: async (root, data, { device, req, res, sessionDB: { login } }) => {
-            const session = await login(data, device);
-
-            // If getting the JWT didn't throw, then we know we have a valid
-            // JWT -- store it on a cookie so that we can re-use it for future
-            // requests to the server
-            res.cookie(JWT_COOKIE, session.token, {
-                expires: session.expiresAt,
-            });
-
-            return session
+        signinUser: async (root, data, { sessionDB: { login } }) => {
+            
+            return await login(data);
         },
 
         createField: async (root, data, { fieldDB: { createField } }) => {
@@ -141,15 +131,6 @@ module.exports = {
             return await getByUserID(root._id);
         },
 
-    },
-
-    SigninPayload: {
-    
-        user: async (root, _, { userDB: { getByID } }) => {
-
-            return await getByID(root.userID);
-        },
-        
     },
 
 
