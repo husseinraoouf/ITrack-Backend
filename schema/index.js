@@ -16,16 +16,19 @@ const typeDefs = `
     type Mutation {
         createUser(name: String!, authProvider: AUTH_PROVIDER_EMAIL!): User!
         signinUser(authProvider: AUTH_PROVIDER_EMAIL): SigninPayload!
+        updateUser(id: String!, name: String, email: String, bios: String, image: String, cover: String, linkedAccounts: [linkedAccountInput!] ): Status!
+        deleteUser(id: String!): Status!
 
         signinUserFromSocial(name: String!, socialAuthProvider: AUTH_PROVIDER_SOCIAL!): SigninPayload!
 
+
         createField(name: String!, description: String!): Field!
-
-
-
-        deleteUser(id: String!): Status!
+        updateField(id: String!, name: String, description: String): Status!
         deleteField(id: String!): Status!
 
+        createTrack(name: String!, description: String!, image: String, fieldID: String!, technologies: [String!]!, reasons: String!, chapters: [ChapterInput!]! ): Track!
+        updateTrack(id: String!, name: String, description: String): Status!
+        deleteTrack(id: String!): Status!
     }
 
     type User {
@@ -51,10 +54,28 @@ const typeDefs = `
         token: String!
     }
 
+    input linkedAccountInput {
+        provider: String!
+        email: String!
+        token: String!
+    }
+
     type Field {
         id: ID!
         name: String!
         description: String!
+    }
+
+    type Track {
+        id: ID!
+        name: String!
+        description: String!
+        image: String
+        field: Field!
+        madeBy: User!
+        technologies: [String!]!
+        reasons: String!
+        chapters: [Chapter!]!
     }
 
     input AUTH_PROVIDER_EMAIL {
@@ -66,6 +87,41 @@ const typeDefs = `
         provider: String!
         email: String!
         token: String!
+    }
+
+    type Chapter {
+        name: String!
+        description: String!
+        steps: [Step!]!
+    }
+
+    input ChapterInput {
+        name: String!
+        description: String!
+        steps: [StepInput!]!
+    }
+
+    type Step {
+        name: String!
+        kind: StepKind!
+        cost: Float!
+        link: String!
+        time: Int!
+    }
+
+    input StepInput {
+        name: String!
+        kind: StepKind!
+        cost: Float!
+        link: String!
+        time: Int!
+    }
+
+
+    enum StepKind {
+        Article
+        Video
+        Movie
     }
 
     type SigninPayload {

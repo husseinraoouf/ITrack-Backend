@@ -20,6 +20,7 @@ module.exports = async() => {
     Sessions: db.collection('Sessions'),
     Fields: db.collection('Fields'),
     Tracks: db.collection('Tracks'),
+    SuggestedLinks: db.collection('SuggestedLinks'),
   };
 
   const dataloaders = buildDataloaders(col);

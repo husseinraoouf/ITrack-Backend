@@ -22,17 +22,17 @@ module.exports = ({ Sessions, Users }) => {
 
         // All good - proceed
 
-        const expire = new Date();
-        expire.setDate(expire.getDate() + 30);
-
+        const now = new Date();
+        
         const newSession = {
             userID: user._id,
-            token: encodeJWT({
+            token: "Bearer " + encodeJWT({
                 id: user._id,
                 name: user.name,
-                image: user.image
+                image: user.image,
+                permission: user.permission
             }),
-            expiresAt: expire,
+            createdAt: now,
         };
         const response = await Sessions.insert(newSession);
         return Object.assign({ id: response.insertedIds[0], user }, newSession);
@@ -113,6 +113,7 @@ module.exports = ({ Sessions, Users }) => {
             image: null,
             cover: null,
             tracks: null,
+            permission: 0,
         };
         const response = await Users.insert(newUser);
         return methods.createSession(Object.assign({ _id: response.insertedIds[0] }, newUser));

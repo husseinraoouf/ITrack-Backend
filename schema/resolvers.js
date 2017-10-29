@@ -109,24 +109,52 @@ module.exports = {
             return await login(data);
         },
 
+        updateUser: async (root, data, { userDB: { updateUser }, jwt }) => {
+            return await updateUser(data, jwt);
+        },
+
+        deleteUser: async (root, data, { userDB: { deleteUser }, jwt }) => {
+            return await deleteUser(data, jwt);
+        },
+
         signinUserFromSocial: async (root, data, { sessionDB: { signinUserFromSocial } }) => {
             
             return await signinUserFromSocial(data);
         },
 
 
-        createField: async (root, data, { fieldDB: { createField } }) => {
-         
-            return await createField(data);
+
+
+        createField: async (root, data, { fieldDB: { createField }, jwt }) => {
+            return await createField(data, jwt);            
         },
 
-        deleteUser: async (root, data, { userDB: { deleteUser } }) => {
-            return await deleteUser(data);
+        updateField: async (root, data, { fieldDB: { updateField }, jwt }) => {
+            return await updateField(data, jwt);    
         },
 
-        deleteField: async (root, data, { fieldDB: { deleteField } }) => {
-            return await deleteField(data);
+
+        deleteField: async (root, data, { fieldDB: { deleteField }, jwt }) => {
+            return await deleteField(data, jwt);            
         },
+
+        
+
+
+        createTrack: async (root, data, { trackDB: { createTrack }, jwt }) => {
+            return await createField(data, jwt);            
+        },
+
+        updateTrack: async (root, data, { trackDB: { updateTrack }, jwt }) => {
+            return await updateField(data, jwt);    
+        },
+
+        deleteTrack: async (root, data, { trackDB: { deleteTrack }, jwt }) => {
+            return await deleteField(data, jwt);            
+        },
+
+
+
     },
 
     User: {
