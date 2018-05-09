@@ -9,12 +9,10 @@ const buildSession = require('./session');
 const buildTrack = require('./track');
 const buildField = require('./field');
 
-// 1
-const { MONGO_URL } = require('../lib/consts');
 
 // 2
 module.exports = async() => {
-  const db = await MongoClient.connect(MONGO_URL);
+  const db = await MongoClient.connect(process.env.MONGODB_URI);
   const col = {
     Users: db.collection('Users'),
     Sessions: db.collection('Sessions'),
