@@ -104,6 +104,10 @@ module.exports = {
             return await login(data);
         },
 
+        signoutUser: async (root, data, {sessionDB: {logout}, jwt}) => {
+            return await logout(jwt);
+        },
+
         updateUser: async (root, data, {userDB: {updateUser}, jwt}) => {
             return await updateUser(data, jwt);
         },

@@ -16,6 +16,10 @@ module.exports = ({Sessions, Users}) => {
 
     methods.getByUserID = async (id) => await Sessions.find({userID: id}).toArray();
 
+    methods.logout = async (jwt) => {
+        await Sessions.remove({token: jwt});
+        return 'OK';
+    };
 
     methods.createSession = async (user) => {
         // All good - proceed

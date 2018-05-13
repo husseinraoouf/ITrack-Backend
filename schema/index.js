@@ -15,6 +15,7 @@ const typeDefs = `
     type Mutation {
         createUser(name: String!, authProvider: AUTH_PROVIDER_EMAIL!): User!
         signinUser(authProvider: AUTH_PROVIDER_EMAIL): SigninPayload!
+        signoutUser: Status!
         updateUser(id: String!, name: String, email: String, bios: String, image: String, cover: String, linkedAccounts: [linkedAccountInput!] ): Status!
         deleteUser(id: String!): Status!
 
