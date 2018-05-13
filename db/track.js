@@ -1,18 +1,17 @@
 const {
-    ObjectID
+    ObjectID,
   } = require('mongodb');
 // Error handler
 const FormError = require('../lib/error');
-const { decodeJWT } = require('../lib/hash');
+const {decodeJWT} = require('../lib/hash');
 
 
-module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
-
-    let methods = {}
+module.exports = ({Tracks, SuggestedLinks}, {userByID}) => {
+    let methods = {};
 
     // methods.getAll = async () => await Tracks.find({}).toArray();
-    
-    
+
+
     // methods.deleteTrack = async ({ id }, jwt) => {
     //     if (! (!!jwt && decodeJWT(jwt).permission == 0) ) {
     //         throw Error("You don't have permission");
@@ -21,19 +20,17 @@ module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
     //     await Fields.remove({ _id: new ObjectID(id) });
     //     return "OK"
     // }
-    
-    
+
+
     methods.createTrack = async (data, jwt) => {
-
-
-        if (!jwt) {    
-            throw Error("You don't have permission");
+        if (!jwt) {
+            throw Error('You don\'t have permission');
         } else {
             const user = decodeJWT(jwt);
-            if(user) {
+            if (user) {
                 data.madeByID = user.id;
             } else {
-                throw Error("You don't have permission");        
+                throw Error('You don\'t have permission');
             }
         }
 
@@ -41,11 +38,10 @@ module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
 //  name: String!,
 //  description: String!,
 //  image: String,
-//  fieldID: String!, 
+//  fieldID: String!,
 //  technologies: [String!]!,
 //  reasons: String!,
-//  chapters: [ChapterInput!]! 
-
+//  chapters: [ChapterInput!]!
 
 
         // Create a blank `FormError` instance, in case we need it
@@ -55,7 +51,7 @@ module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
 
         if (data.name.length < 2 || data.name.length > 32) {
             e.set('name', 'Track name needs to be between 2-32 characters in length.');
-        } else if (await Tracks.findOne({ name: data.name })) {
+        } else if (await Tracks.findOne({name: data.name})) {
             e.set('name', 'Tracks name already exist.');
         }
 
@@ -73,16 +69,16 @@ module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
         }
 
         data.fieldID = new ObjectID(data.fieldID);
-        
+
         // data.chapters.forEach(function(element, i) {
         //     data.chapters[i] = Object.assign({ id: new ObjectID() }, element);
         // }, this);
-        
+
         // Do we have an error?
         e.throwIf();
 
         const now = new Date();
-        
+
         // All good - proceed
         const newField = {
             name: data.name,
@@ -92,9 +88,8 @@ module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
         };
 
         const response = await Fields.insert(newField);
-        return Object.assign({ id: response.insertedIds[0] }, newField);
-    
-    }
+        return Object.assign({id: response.insertedIds[0]}, newField);
+    };
 
 
     // methods.updateTrack = async (data, jwt) => {
@@ -130,11 +125,11 @@ module.exports = ({ Tracks, SuggestedLinks }, { userByID }) => {
     //         {_id: new ObjectID(id)},
     //         {$set: { ...change, updatedAt: new Date() }}
     //     )
-    
+
     //     return "OK";
-    
+
     // }
-    
+
 
     return methods;
 };

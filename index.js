@@ -1,26 +1,23 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
+const {graphqlExpress, graphiqlExpress} = require('apollo-server-express');
 const schema = require('./schema');
-const { decodeJWT } = require('./lib/hash');
 const cors = require('cors');
-const { getJWT } = require('./lib/helpers');
+const {getJWT} = require('./lib/helpers');
 
 
 const connectDB = require('./db');
 
 
 const start = async () => {
-
     const DB = await connectDB();
-    var app = express();
+    const app = express();
     app.use(cors());
 
     const buildOptions = (req, res) => {
-        
         const jwt = getJWT(req.headers.authorization);
         return {
-            context: { ...DB, jwt}, // This context object is passed to all resolvers.
+            context: {...DB, jwt}, // This context object is passed to all resolvers.
             schema,
         };
     };
@@ -33,7 +30,7 @@ const start = async () => {
 
     const PORT = process.argv[2] || 5000;
     app.listen(PORT, () => {
-        console.log(`GraphQL server running on port ${PORT}.`)
+        console.log(`GraphQL server running on port ${PORT}.`);
     });
 };
 

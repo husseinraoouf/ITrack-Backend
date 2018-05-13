@@ -1,5 +1,5 @@
 const {
-  MongoClient
+  MongoClient,
 } = require('mongodb');
 
 const buildDataloaders = require('./dataloaders');
@@ -11,7 +11,7 @@ const buildField = require('./field');
 
 
 // 2
-module.exports = async() => {
+module.exports = async () => {
   const db = await MongoClient.connect(process.env.MONGODB_URI);
   const col = {
     Users: db.collection('Users'),
@@ -34,6 +34,5 @@ module.exports = async() => {
     sessionDB,
     trackDB,
     fieldDB,
-  }
-
-}
+  };
+};

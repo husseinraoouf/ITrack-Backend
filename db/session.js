@@ -3,44 +3,40 @@ const isEmail = require('isemail');
 /* Local */
 
 // Hashing/JWT
-const { checkPassword, encodeJWT } = require('../lib/hash');
+const {checkPassword, encodeJWT} = require('../lib/hash');
 
 // Error handler
 const FormError = require('../lib/error');
 
 
-module.exports = ({ Sessions, Users }) => {
-    
-    let methods = {}
+module.exports = ({Sessions, Users}) => {
+    let methods = {};
 
-    methods.getByToken = async (jwt) => await Sessions.findOne({ token: jwt });
+    methods.getByToken = async (jwt) => await Sessions.findOne({token: jwt});
 
-    methods.getByUserID = async (id) => await Sessions.find({ userID: id }).toArray();
+    methods.getByUserID = async (id) => await Sessions.find({userID: id}).toArray();
 
 
     methods.createSession = async (user) => {
-
         // All good - proceed
 
         const now = new Date();
-        
+
         const newSession = {
             userID: user._id,
-            token: "Bearer " + encodeJWT({
+            token: 'Bearer ' + encodeJWT({
                 id: user._id,
                 name: user.name,
                 image: user.image,
-                permission: user.permission
+                permission: user.permission,
             }),
             createdAt: now,
         };
         const response = await Sessions.insert(newSession);
-        return Object.assign({ id: response.insertedIds[0], user }, newSession);
-        
-    }
+        return Object.assign({id: response.insertedIds[0], user}, newSession);
+    };
 
     methods.login = async (data) => {
-
         const e = new FormError();
 
         /* Validate data */
@@ -83,22 +79,21 @@ module.exports = ({ Sessions, Users }) => {
 
         // Create the new session
         return methods.createSession(user);
-    }
+    };
 
 
     methods.signinUserFromSocial = async (data) => {
-
         const existingUser = await Users.findAndModify(
-            { linkedAccounts: {$elemMatch: {provide: data.socialAuthProvider.provider, email: data.socialAuthProvider.email, } } },
-            [],               // represents a sort order if multiple matches
-            { $set: { "linkedAccounts.$.token": data.socialAuthProvider.token } },   // update statement
-            { new: true },
+            {linkedAccounts: {$elemMatch: {provide: data.socialAuthProvider.provider, email: data.socialAuthProvider.email}}},
+            [], // represents a sort order if multiple matches
+            {$set: {'linkedAccounts.$.token': data.socialAuthProvider.token}}, // update statement
+            {new: true},
         );
-        
+
         if (existingUser.value) return methods.createSession(existingUser.value);
-    
+
         // Nope -- let's create one
-    
+
         // All good - proceed
         const newUser = {
             name: data.name,
@@ -116,8 +111,8 @@ module.exports = ({ Sessions, Users }) => {
             permission: 0,
         };
         const response = await Users.insert(newUser);
-        return methods.createSession(Object.assign({ _id: response.insertedIds[0] }, newUser));
-    }
+        return methods.createSession(Object.assign({_id: response.insertedIds[0]}, newUser));
+    };
 
     return methods;
-}
+};

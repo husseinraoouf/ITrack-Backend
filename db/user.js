@@ -1,40 +1,38 @@
-const  isEmail = require('isemail');
+const isEmail = require('isemail');
 const {URL} = require('url');
 const {
-  ObjectID
+  ObjectID,
 } = require('mongodb');
-const { decodeJWT } = require('../lib/hash');
+const {decodeJWT} = require('../lib/hash');
 
 
 /* Local */
 
 // Bcrypt hashing, for use with passwords
-const { generatePasswordHash } = require('../lib/hash');
+const {generatePasswordHash} = require('../lib/hash');
 
 // Error handler
 const FormError = require('../lib/error');
 
 
-module.exports = ({ Users }, { userByID }) => {
-    
-    let methods = {}
-    
+module.exports = ({Users}, {userByID}) => {
+    let methods = {};
+
     methods.getAll = async () => await Users.find({}).toArray();
 
-    methods.getByID = async (id) => await Users.findOne({ _id: id});
+    methods.getByID = async (id) => await Users.findOne({_id: id});
 
     methods.deleteUser = async ({id}, jwt) => {
-
         if (! ( !!jwt && (decodeJWT(jwt).permission == 0 || decodeJWT(jwt).id == data.id) )) {
-            throw Error("You don't have permission");
+            throw Error('You don\'t have permission');
         }
 
-        await Users.remove({ _id: new ObjectID(id) });
-        return "OK"
-    }
+        await Users.remove({_id: new ObjectID(id)});
+        return 'OK';
+    };
 
     // 3
-    methods.createUser =  async (data) => {
+    methods.createUser = async (data) => {
         // Create a blank `FormError` instance, in case we need it
         const e = new FormError();
 
@@ -45,7 +43,7 @@ module.exports = ({ Users }, { userByID }) => {
             e.set('email', 'Please enter a valid e-mail.');
 
             // Check that the e-mail isn't already taken
-        } else if (await Users.findOne({ email: data.authProvider.email })) {
+        } else if (await Users.findOne({email: data.authProvider.email})) {
             e.set('email', 'Your e-mail belongs to another account. Please login instead.');
         }
 
@@ -75,14 +73,13 @@ module.exports = ({ Users }, { userByID }) => {
             permission: 0,
         };
         const response = await Users.insert(newUser);
-        return Object.assign({ id: response.insertedIds[0] }, newUser);
-    }
+        return Object.assign({id: response.insertedIds[0]}, newUser);
+    };
 
 
     methods.updateUser = async (data, jwt) => {
-
         if (! (!!jwt && decodeJWT(jwt).id == data.id)) {
-            throw Error("You don't have permission");
+            throw Error('You don\'t have permission');
         }
 
         // Create a blank `FormError` instance, in case we need it
@@ -98,7 +95,7 @@ module.exports = ({ Users }, { userByID }) => {
             e.set('email', 'Please enter a valid e-mail.');
 
             // Check that the e-mail isn't already taken
-        } else if (data.email && await Users.findOne({ email: data.email })) {
+        } else if (data.email && await Users.findOne({email: data.email})) {
             e.set('email', 'Your e-mail belongs to another account. Please login instead.');
         }
 
@@ -126,20 +123,19 @@ module.exports = ({ Users }, { userByID }) => {
                 e.set('cover', 'Link validation error: invalid url.');
             }
         }
-        
+
 
         e.throwIf();
 
-        const { id, ...change } = data;
+        const {id, ...change} = data;
 
         await Users.update(
             {_id: new ObjectID(id)},
-            {$set: { ...change, updatedAt: new Date() }}
-        )
-    
-        return "OK";
-    
-    }
-    
+            {$set: {...change, updatedAt: new Date()}}
+        );
+
+        return 'OK';
+    };
+
     return methods;
 };
