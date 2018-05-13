@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "The Backend of ITeack",
   "engines": {
-    "node": "9"
+    "node": "9.11.1"
   },
   "main": "index.js",
   "scripts": {
