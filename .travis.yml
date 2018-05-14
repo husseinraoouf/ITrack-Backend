@@ -1,8 +1,12 @@
 language: node_js
 node_js:
-  - "10"
-
-script: yarn jest --coverage --coverageReporters=text-lcov | yarn coveralls && rm -rf ./coverage
-
+- '10'
+script: yarn jest --coverage --coverageReporters=text-lcov | yarn coveralls && rm
+  -rf ./coverage
 notifications:
   email: false
+deploy:
+  provider: heroku
+  app: itrack-server
+  api_key:
+    secure: WapxQaWF3YhGFYN4VVgDUy9JzN4wBJwid8Boba73PD4zB1lpSKroR43AYp6upPHj+RLwdXk2g4cY4Cy0CKEcMetULik9gXyB2tu7F7KCfKPIB9HlRPqQkl1WYYQTQw+t7XC+Ew9Zqho9eZoDahZTv9sbCZRwQkU9bkst0skvtQLicLZuJ9TCQSYMLs57EYo/KuptPhf7TjrRVtBQuvTBkST0ZgTdeXdRNP+DUlc8/9a1kfP0Xoq4CdvRX9QUqAc9gwtiucJsuhBZvtKcOEIgljB/LI/fYvv1syH2QhIYkyR1qcb3ujtxit8ASkbRhXplp9tlCp+Ab35EjSaC6Y/3Z14btexi7Gqngo8pCadmQ9RmgKu1Qg7MInnEigBKwkrdrn+i4c5Fiksy6dymwVAmTeSF4BUbmBu5llKdhphV1t8lpbzbIIGxnnm6324E7dWKacsQhXVazkSPYoYdtSchJrXc6OKTjPiKRud2oeP3YLZQnkDwcElI7qw+5dVk1mSbsxRyfxAbZk/CpWe42lXNCmsQPW1KeOBaF2sXc8HRKYeus1xjoAm57E5VN8yO0Wn6U265dtZD2+mIDS7M8oVOIaihEWke0xkT2xUOpsCFHrAp50laZ/RJrBb4NP426C+uCZb3y+F1nm9zG33FJ8MqvbdHbZGtT/Z7GwIUcN7ZohQ=
