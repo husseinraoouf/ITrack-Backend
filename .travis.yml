@@ -1,8 +1,9 @@
 language: node_js
 node_js:
 - '10'
-script: yarn jest --coverage --coverageReporters=text-lcov | yarn coveralls && rm
-  -rf ./coverage
+script: 
+  - yarn jest --coverage
+  - yarn codecov
 notifications:
   email: false
 deploy:
